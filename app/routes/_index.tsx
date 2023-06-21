@@ -1,21 +1,31 @@
-import type { V2_MetaFunction } from '@remix-run/node';
-import styles from '~/index.css';
+import { json, type LoaderArgs } from '@remix-run/node';
+import { Form, useLoaderData } from '@remix-run/react';
 
-export const meta: V2_MetaFunction = () => {
-  return [
-    { title: 'Este es el titulo' },
-    { name: 'description', content: 'Welcome to Remix!' },
-  ];
-};
+// Loader -> Se ejecuta en el server.
+// Loader -> Lo primero que pasa antes de mostrar el UI.
+export function loader(_: LoaderArgs) {
+  const fakeData = {
+    msg: 'Holaaaaaaaa!',
+    date: new Date(),
+  };
 
-export const links = () => {
-  return [{ rel: 'stylesheet', href: styles }];
-};
+  return json(fakeData);
+}
+
+export function action() {
+  console.log('action');
+  return null;
+}
 
 export default function Index() {
+  const { msg } = useLoaderData<typeof loader>();
+
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.8' }}>
-      <h1>Hola a todos!</h1>
-    </div>
+    <>
+      <h1 className='underline'>{msg}</h1>
+      <Form method='post'>
+        <button type='submit'>Request!</button>
+      </Form>
+    </>
   );
 }
