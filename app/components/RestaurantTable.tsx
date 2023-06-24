@@ -1,4 +1,4 @@
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import type { loader } from '~/routes/_index';
 import { ORDER_OPTIONS } from '~/types/orderby';
 import { OrderDropdown } from './OrderDropdown';
@@ -8,7 +8,7 @@ export function RestaurantTable() {
 
   return (
     <>
-      <div className='ml-auto mt-10'>
+      <div className='w-fit ml-auto mt-10'>
         <OrderDropdown options={ORDER_OPTIONS} />
       </div>
       <div className='mt-8 flow-root'>
@@ -41,7 +41,12 @@ export function RestaurantTable() {
                 {restaurants.map((restaurant) => (
                   <tr key={restaurant.id}>
                     <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                      {restaurant.name}
+                      <Link
+                        to={`restaurant/${restaurant.id}`}
+                        className='underline'
+                      >
+                        {restaurant.name}
+                      </Link>
                     </td>
                     <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
                       {restaurant.foods.length}

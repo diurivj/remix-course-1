@@ -7,6 +7,11 @@ type CreateRestaurantPayload = {
   typeId: RestaurantType['id'];
 };
 
+type UpdateRestaurantRatingPayload = {
+  restaurantId: RestaurantType['id'];
+  rating: number;
+};
+
 export function createRestaurant({
   name,
   foods,
@@ -51,6 +56,76 @@ export function getRestaurants(order: string) {
     orderBy: {
       [key]: value,
     },
+    include: {
+      foods: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
+}
+
+export function getRestaurantById(id: RestaurantType['id']) {
+  return db.restaurant.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      type: true,
+      comments: {
+        select: {
+          creator: true,
+          text: true,
+          id: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
+      foods: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
+}
+
+export function updateRestaurantRating({
+  restaurantId: id,
+  rating,
+}: UpdateRestaurantRatingPayload) {
+  return db.restaurant.update({
+    where: {
+      id,
+    },
+    data: {
+      rating: {
+        increment: rating,
+      },
+      visitors: {
+        increment: 1,
+      },
+    },
+  });
+}
+
+export async function getChefsRecommendation() {
+  // create a function that delays time
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+  // delay 2 seconds
+  await delay(3000);
+
+  return db.restaurant.findMany({
+    orderBy: {
+      rating: 'desc',
+    },
+    take: 3,
     include: {
       foods: {
         select: {
