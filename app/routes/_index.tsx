@@ -25,7 +25,15 @@ export async function loader({ request }: DataFunctionArgs) {
     getRestaurants(order),
   ]);
 
-  return json({ restaurantTypes, restaurants });
+  return json(
+    { restaurantTypes, restaurants }
+    // {
+    //   headers: {
+    //     'Cache-Control':
+    //       'public, max-age=3600, s-maxage=3600, stale-while-revalidate',
+    //   },
+    // }
+  );
 }
 
 export async function action({ request }: DataFunctionArgs) {
