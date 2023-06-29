@@ -12,6 +12,11 @@ type UpdateRestaurantRatingPayload = {
   rating: number;
 };
 
+type GetRestaurantListPayload = {
+  page: number;
+  limit: number;
+};
+
 export function createRestaurant({
   name,
   foods,
@@ -135,4 +140,31 @@ export async function getChefsRecommendation() {
       },
     },
   });
+}
+
+export async function getRestaurantList({
+  page,
+  limit,
+}: GetRestaurantListPayload) {
+  // page = 1, limit = 10 -> id 1 -> 10
+  // page = 2, limit = 10 -> id 11 -> 20
+
+  // return the total amount of restaurants
+  const total = await db.restaurant.count();
+  const restaurants = await db.restaurant.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    select: {
+      id: true,
+      name: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  return {
+    total,
+    restaurants,
+  };
 }
