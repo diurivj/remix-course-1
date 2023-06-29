@@ -4,6 +4,7 @@ import {
   type DataFunctionArgs,
   type V2_MetaFunction,
 } from '@remix-run/node';
+import { useNavigate } from '@remix-run/react';
 import { z } from 'zod';
 import { RestaurantHeader } from '~/components/RestaurantHeader';
 import { RestaurantTable } from '~/components/RestaurantTable';
@@ -61,19 +62,15 @@ export async function action({ request }: DataFunctionArgs) {
 }
 
 export default function Index() {
+  const navigate = useNavigate();
+
   return (
     <main className='mx-auto py-20 max-w-7xl sm:px-6 lg:px-8'>
       <div className='px-4 sm:px-6 lg:px-8'>
-        {/* <Form method='POST' action='/logout'>
-          <button type='submit'>Logout</button>
-        </Form> */}
-        <div className='border-red-500'>
-          <SignOutButton />
-        </div>
         <SignedIn>
-          <h1>Index route</h1>
+          <SignOutButton signOutCallback={() => navigate('/')} />
           <p>You are signed in!</p>
-          <UserButton />
+          <UserButton afterSignOutUrl='/' />
         </SignedIn>
 
         <RestaurantHeader />

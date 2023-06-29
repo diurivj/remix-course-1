@@ -1,9 +1,10 @@
-import type { DataFunctionArgs } from '@remix-run/node';
+import { getAuth } from '@clerk/remix/ssr.server';
+import { redirect, type DataFunctionArgs } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
-import { authenticator } from '~/services/auth.server';
 
-export async function loader({ request }: DataFunctionArgs) {
-  await authenticator.isAuthenticated(request, { failureRedirect: '/login' });
+export async function loader(args: DataFunctionArgs) {
+  const { sessionId } = await getAuth(args);
+  if (!sessionId) return redirect('/login');
   return null;
 }
 
